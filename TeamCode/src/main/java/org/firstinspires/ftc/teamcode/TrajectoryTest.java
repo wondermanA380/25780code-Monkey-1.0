@@ -145,7 +145,7 @@ public class TrajectoryTest extends LinearOpMode {
 //        }
 
         // test
-        trajectoryActionChosen = tab1.build();
+        trajectoryActionChosen = tab1.build(); // test
 
         waitForStart();
         if (opModeIsActive()) {
