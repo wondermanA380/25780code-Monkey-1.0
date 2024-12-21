@@ -21,6 +21,7 @@ public class ClawTestTeleop extends LinearOpMode{
     private DcMotor backright;
     private DcMotor outtakeSlide;
     private DcMotor intakeSlide;
+    private DcMotor hangMotor;
     private Servo wrist;
     private Servo intakeClaw;
     private Servo transfer;
@@ -65,7 +66,7 @@ public class ClawTestTeleop extends LinearOpMode{
         wrist = hardwareMap.get(Servo.class, "wrist");
         intakeClaw = hardwareMap.get(Servo.class, "intakeClaw");
         transfer = hardwareMap.get(Servo.class, "bucketServo");
-
+        hangMotor = hardwareMap.get(DcMotor.class, "hangMotor");
 
 
         outtakeSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -81,6 +82,7 @@ public class ClawTestTeleop extends LinearOpMode{
         backright.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         outtakeSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         intakeSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        hangMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         frontleft.setDirection(DcMotorSimple.Direction.REVERSE);
         backleft.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -99,6 +101,7 @@ public class ClawTestTeleop extends LinearOpMode{
                 intakeHandling();
                 slideHandlings();
                 outtakeHandling();
+                hangingMechanism();
             }
         }
 
@@ -159,4 +162,7 @@ public class ClawTestTeleop extends LinearOpMode{
         //opens the specimen claw
     }
 
+    public void hangingMechanism(){
+        hangMotor.setPower(gamepad1.right_stick_y);
+    }
 }
