@@ -143,7 +143,9 @@ public class TrajectoryTest extends LinearOpMode {
 //        while (leftclawSpecimen.getPosition() != -0.5 && rightclawSpecimen.getPosition()!= 0.5 && opModeIsActive()){
 //
 //        }
-        trajectoryActionChosen = tab1.build();
+
+        // test
+        trajectoryActionChosen = tab1.build(); // test
 
         waitForStart();
         if (opModeIsActive()) {
