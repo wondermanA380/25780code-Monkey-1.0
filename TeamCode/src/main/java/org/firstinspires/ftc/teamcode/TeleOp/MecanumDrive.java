@@ -16,6 +16,9 @@ public class MecanumDrive extends LinearOpMode {
 
     ElapsedTime outtakeTimer = new ElapsedTime();
 
+    private double integralSum = 0;
+    private double lastError = 0;
+
     @Override
     public void runOpMode() {
         frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
@@ -93,6 +96,8 @@ public class MecanumDrive extends LinearOpMode {
     }
 
     public void sampleScoring() {
+        boolean isIntakeSlideBusy;
+
         if (gamepad2.dpad_down) {
             //intake wrist down
             intakeWrist.setPosition(IW_DOWN);
@@ -108,6 +113,30 @@ public class MecanumDrive extends LinearOpMode {
         } else if (gamepad2.x) {
             //transfer to outtake
             intakeWrist.setPosition(IW_UP);
+            intakeSlide.setPower(Power(384.5, 0, "Retract", intakeSlide));
+
+            if (intakeSlide.getPower() != 0) {
+                isIntakeSlideBusy = true;
+            } else {
+                isIntakeSlideBusy = false;
+            }
+
+            while (isIntakeSlideBusy && opModeIsActive()) {
+
+                telemetry.addLine("intake is busy");
+                telemetry.addData("intake slide position", intakeSlide.getCurrentPosition());
+                telemetry.update();
+
+                robotMovement(.75f);
+
+                if (intakeSlide.getCurrentPosition() < 15) {
+                    isIntakeSlideBusy = false;
+                } else if (gamepad1.dpad_right) {
+                    intakeSlide.setPower(0);
+                    intakeSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    isIntakeSlideBusy = false;
+                }
+            }
             outtakeClaw.setPosition(OC_OPEN);
             timer(500);
             outtakeWrist.setPosition(OW_DOWN);
@@ -115,10 +144,23 @@ public class MecanumDrive extends LinearOpMode {
             outtakeClaw.setPosition(OC_CLOSE);
             timer(500);
             intakeClaw.setPosition(IC_OPEN);
+        } else if (gamepad2.dpad_right) {
+  //          if(outtakeSlide.getCurrentPosition() >= OUTTAKE_SLIDE_BOTTOM_BASKET) {
+    //            outtakeSlide.setPower(0);
+                outtakeWrist.setPosition(OW_UP);
+  /*          }else{
+               while (outtakeSlide.getCurrentPosition() < OUTTAKE_SLIDE_TOP_BASKET) {
+                    outtakeSlide.setPower(OUTTAKE_SPEED);
+                    outtakeWrist.setPosition(OW_UP);
+                    robotMovement();
+                    slideControls();
+                    sampleScoring();
+                    hanging();
+                }*/
+
+
         } else if (gamepad2.dpad_left) {
             outtakeWrist.setPosition(OW_DOWN);
-        } else if (gamepad2.dpad_right) {
-            outtakeWrist.setPosition(OW_UP);
         } else if (gamepad2.left_bumper) {
             outtakeClaw.setPosition(OC_CLOSE);
         } else if (gamepad2.right_bumper) {
@@ -135,5 +177,25 @@ public class MecanumDrive extends LinearOpMode {
         while (outtakeTimer.milliseconds() <= milliseconds) {
             robotMovement();
         }
+    }
+
+    public double Power(double MotorPPR, double SlideRotations, String Direction, DcMotor Motor) {
+        double targetPos = (SlideRotations * MotorPPR);
+        double currPos = Motor.getCurrentPosition();
+
+        if (Direction.equals("Extend") && currPos >= targetPos) {
+            outtakeTimer.reset();
+            return 0.1;
+        } else if (Direction.equals("Retract") && currPos <= targetPos) {
+            outtakeTimer.reset();
+            return 0;
+        }
+
+        double error = targetPos - currPos;
+        integralSum += error * outtakeTimer.seconds();
+        double derivative = (error - lastError) / outtakeTimer.seconds();
+        lastError = error;
+
+        return (error * P) + (integralSum * I) + (derivative * D);
     }
 }
