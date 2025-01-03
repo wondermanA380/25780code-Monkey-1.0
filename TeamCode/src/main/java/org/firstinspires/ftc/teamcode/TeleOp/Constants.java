@@ -21,7 +21,7 @@ public final class Constants {
     public static final float OC_CLOSE = 0.28f;
     public static final float IW_DOWN = -1;
     public static final float IW_UP = 0.84f;
-    public static final float OW_DOWN = 0.98f;
+    public static final float OW_DOWN = 0.99f;
     public static final float OW_UP = -1f;
     //hi
 }

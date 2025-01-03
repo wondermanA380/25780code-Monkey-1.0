@@ -165,6 +165,7 @@ public class MecanumDrive extends LinearOpMode {
             outtakeClaw.setPosition(OC_CLOSE);
         } else if (gamepad2.right_bumper) {
             outtakeClaw.setPosition(OC_OPEN);
+            outtakeWrist.setPosition(OW_DOWN);
         }
     }
 
