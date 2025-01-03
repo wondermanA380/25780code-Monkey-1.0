@@ -125,22 +125,22 @@ public class SpecimenSideAutoCode extends LinearOpMode {
 
         TrajectoryActionBuilder tab7 = drive.actionBuilder(new Pose2d(0,-35,Math.toRadians(270)))
                 .lineToY(-45)
-                .strafeToLinearHeading(new Vector2d(37,-45),Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(31,-45),Math.toRadians(90))
                 .setTangent(Math.toRadians(90))
-                .lineToY(-10)
-                .strafeTo(new Vector2d(45,-10))
+                .lineToY(-15)
+                .strafeTo(new Vector2d(40,-10))
                 .setTangent(Math.toRadians(90))
-                .lineToY(-60)
-                .lineToY(-10)
-                .strafeTo(new Vector2d(55,-10))
+                .lineToY(-52)
+                .lineToY(-15)
+                .strafeTo(new Vector2d(54,-10))
                 .setTangent(Math.toRadians(90))
-                .lineToY(-60);
+                .lineToY(-52);
 
         TrajectoryActionBuilder tab4 = drive.actionBuilder(new Pose2d(0,-35,Math.toRadians(270)))
-                .strafeToLinearHeading(new Vector2d(31.5,-52),Math.toRadians(90))
-                .strafeTo(new Vector2d(31.5,-5));
+                .strafeTo(new Vector2d(31.5,-52))
+                .strafeTo(new Vector2d(31.5,-60));
 
-        TrajectoryActionBuilder tab5 = drive.actionBuilder(new Pose2d(31.5,-58,Math.toRadians(90)))
+        TrajectoryActionBuilder tab5 = drive.actionBuilder(new Pose2d(31.5,-60,Math.toRadians(90)))
                 .strafeToLinearHeading(new Vector2d(0,-40),Math.toRadians(270))
                 .strafeTo(new Vector2d(0,-40));
 
@@ -208,34 +208,33 @@ public class SpecimenSideAutoCode extends LinearOpMode {
             Actions.runBlocking(trajectoryPushSamples);
 
 
-//            Actions.runBlocking(trajectoryPickUpSpecimen2);
-//
-//            leftclawSpecimen.setPosition(-0.5);
-//            rightclawSpecimen.setPosition(0.5);
-//            while (leftclawSpecimen.getPosition() != -0.5 && rightclawSpecimen.getPosition()!= 0.5 && opModeIsActive()){
-//                telemetry.addData("specimenClawsBusy : LeftClawPosition : ", leftclawSpecimen.getPosition());
-//                telemetry.update();
-//            }
-//            sleep(1000);
-//
-//            Actions.runBlocking(trajectoryMoveToSubmersible2);
-//
-//            outtakeSlide.setTargetPosition((int)(384.5*3.5));
-//            outtakeSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//            outtakeSlide.setPower(0.5);
-//            while(outtakeSlide.isBusy() &&  opModeIsActive()) {}
-//
-//           Actions.runBlocking(trajectoryDropSpecimen);
-//
-//            outtakeSlide.setTargetPosition(-(int)(384.5*2.5));
-//            outtakeSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//            outtakeSlide.setPower(-1);
-//            while(outtakeSlide.isBusy() &&  opModeIsActive()) {}
+            Actions.runBlocking(trajectoryPickUpSpecimen2);
+
+            leftclawSpecimen.setPosition(-0.5);
+            rightclawSpecimen.setPosition(0.5);
+            while (leftclawSpecimen.getPosition() != -0.5 && rightclawSpecimen.getPosition()!= 0.5 && opModeIsActive()){
+                telemetry.addData("specimenClawsBusy : LeftClawPosition : ", leftclawSpecimen.getPosition());
+                telemetry.update();
+            }
+            sleep(1000);
+
+            Actions.runBlocking(trajectoryMoveToSubmersible2);
+
+            outtakeSlide.setTargetPosition((int)(384.5*3.5));
+            outtakeSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            outtakeSlide.setPower(0.5);
+            while(outtakeSlide.isBusy() &&  opModeIsActive()) {}
+
+            Actions.runBlocking(trajectoryDropSpecimen);
+
+            outtakeSlide.setTargetPosition(-(int)(384.5*2.5));
+            outtakeSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            outtakeSlide.setPower(-1);
+            while(outtakeSlide.isBusy() &&  opModeIsActive()) {}
 
 
         }
 
     }
 }
-
 
