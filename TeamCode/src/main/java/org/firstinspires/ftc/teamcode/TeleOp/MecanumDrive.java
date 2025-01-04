@@ -12,7 +12,7 @@ import static org.firstinspires.ftc.teamcode.TeleOp.Constants.*;
 @TeleOp(name="MecanumDrive", group="OpMode")
 public class MecanumDrive extends LinearOpMode {
     private DcMotor frontLeft, frontRight, backLeft, backRight, intakeSlide, outtakeSlide, hangMotor;
-    private Servo intakeClaw, intakeWrist, outtakeClaw, outtakeWrist;
+    private Servo intakeClaw, intakeWrist, outtakeClaw, outtakeWrist, speciminClawRight, speciminClawLeft;
 
     ElapsedTime outtakeTimer = new ElapsedTime();
 
@@ -32,6 +32,9 @@ public class MecanumDrive extends LinearOpMode {
         intakeWrist = hardwareMap.get(Servo.class, "intakeWrist");
         outtakeClaw = hardwareMap.get(Servo.class, "outtakeClaw");
         outtakeWrist = hardwareMap.get(Servo.class, "outtakeWrist");
+        speciminClawRight = hardwareMap.get(Servo.class, "speciminClawRight");
+        speciminClawLeft = hardwareMap.get(Servo.class, "speciminClawLeft");
+
 
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -166,6 +169,13 @@ public class MecanumDrive extends LinearOpMode {
         } else if (gamepad2.right_bumper) {
             outtakeClaw.setPosition(OC_OPEN);
             outtakeWrist.setPosition(OW_DOWN);
+        }else if (gamepad1.a){
+            speciminClawRight.setPosition(SCR_OPEN);
+            speciminClawLeft.setPosition(SCL_OPEN);
+        }else if(gamepad1.b){
+            speciminClawRight.setPosition(SCR_CLOSE);
+            speciminClawLeft.setPosition(SCL_CLOSE);
+
         }
     }
 
