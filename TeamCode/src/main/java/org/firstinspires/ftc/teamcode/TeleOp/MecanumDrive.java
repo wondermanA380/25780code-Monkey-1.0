@@ -19,6 +19,8 @@ public class MecanumDrive extends LinearOpMode {
 
     private double integralSum = 0;
     private double lastError = 0;
+    private float outtakeInput = OUTTAKE_SPEED * (gamepad2.right_trigger - gamepad2.left_trigger);
+    private float intakeInput= INTAKE_SPEED * (gamepad1.right_trigger - gamepad1.left_trigger)
 
     @Override
     public void runOpMode() {
@@ -88,7 +90,7 @@ public class MecanumDrive extends LinearOpMode {
     public void slideControls() {
         // TODO: See if can be made smoother (PID?)
         if (intakeSlide.getCurrentPosition() < INTAKE_SLIDE_LIMIT) {
-            intakeSlide.setPower(INTAKE_SPEED * (gamepad1.right_trigger - gamepad1.left_trigger));
+            intakeSlide.setPower(intakeInput);
         } else if (intakeSlide.getCurrentPosition() >= INTAKE_SLIDE_LIMIT) {
             intakeSlide.setPower(-0.5);
         }
@@ -104,10 +106,13 @@ public class MecanumDrive extends LinearOpMode {
 
         // TODO: See if can be made smoother (PID?)
         if (outtakeSlide.getCurrentPosition() < OUTTAKE_SLIDE_TOP_BASKET) {
-            outtakeSlide.setPower(OUTTAKE_SPEED * (gamepad2.right_trigger - gamepad2.left_trigger));
+            outtakeSlide.setPower(outtakeInput);
         } else if (outtakeSlide.getCurrentPosition() >= OUTTAKE_SLIDE_TOP_BASKET) {
             outtakeSlide.setPower(0);
         }
+
+        telemetry.addData("outtake slide power", outtakeInput);
+        telemetry.update();
     }
 
     public void sampleScoring() {
