@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import static org.firstinspires.ftc.teamcode.TeleOp.Constants.*;
@@ -13,7 +14,7 @@ import static org.firstinspires.ftc.teamcode.TeleOp.Constants.*;
 public class MecanumDrive extends LinearOpMode {
     private DcMotor frontLeft, frontRight, backLeft, backRight, intakeSlide, outtakeSlide, hangMotor;
     private Servo intakeClaw, intakeWrist, outtakeClaw, outtakeWrist, speciminClawRight, speciminClawLeft;
-
+    private TouchSensor intakeTouch, outtakeTouch;
     ElapsedTime outtakeTimer = new ElapsedTime();
 
     private double integralSum = 0;
@@ -34,7 +35,8 @@ public class MecanumDrive extends LinearOpMode {
         outtakeWrist = hardwareMap.get(Servo.class, "outtakeWrist");
         speciminClawRight = hardwareMap.get(Servo.class, "speciminClawRight");
         speciminClawLeft = hardwareMap.get(Servo.class, "speciminClawLeft");
-
+        intakeTouch = hardwareMap.get(TouchSensor.class, "intakeTouch");
+        outtakeTouch = hardwareMap.get(TouchSensor.class, "outtakeTouch");
 
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -58,6 +60,7 @@ public class MecanumDrive extends LinearOpMode {
         waitForStart();
 
         if (opModeIsActive()) {
+            outtakeWrist.setPosition(OW_DOWN);
             while (opModeIsActive()) {
                 robotMovement();
                 slideControls();
@@ -88,6 +91,15 @@ public class MecanumDrive extends LinearOpMode {
             intakeSlide.setPower(INTAKE_SPEED * (gamepad1.right_trigger - gamepad1.left_trigger));
         } else if (intakeSlide.getCurrentPosition() >= INTAKE_SLIDE_LIMIT) {
             intakeSlide.setPower(-0.5);
+        }
+
+        if (intakeTouch.isPressed()){
+            intakeSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            intakeSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+        if (outtakeTouch.isPressed()){
+            outtakeSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            outtakeSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
 
         // TODO: See if can be made smoother (PID?)
@@ -132,7 +144,7 @@ public class MecanumDrive extends LinearOpMode {
 
                 robotMovement(.75f);
 
-                if (intakeSlide.getCurrentPosition() < 15) {
+                if (intakeSlide.getCurrentPosition() < 100|| intakeTouch.isPressed()) {
                     isIntakeSlideBusy = false;
                 } else if (gamepad1.dpad_right) {
                     intakeSlide.setPower(0);
